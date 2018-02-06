@@ -22,15 +22,6 @@ function stalking_version() {
   echo "[*] Stalking 1.0.0"
 }
 
-function stalking_verificar_uid() {
-
-  # Se não for executado com privilégios root
-  if [ $UID -ne 0 ] ; then
-    print_error "Execute esse programa com privilégios root"
-  fi
-
-}
-
 # Verificar se algum arquivo ($1) existe
 # Se existir um segundo argumento ($2), então significa que devemos retornar
 #  0 se ele existe ou 1 se ele não existe
