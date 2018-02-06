@@ -281,6 +281,9 @@ function stalking_twitter() {
 # Twitter: vai baixar os tweets
 function stalking_search() {
 
+  # github.com/jarun/googler
+  stalking_verificar_dep "googler"
+
   alvo=`stalking_get_dir "Nome do alvo" "$1"`
 
   # Verificando se existe um diretório para esse alguém
