@@ -240,10 +240,10 @@ function stalking_instagram() {
   qnt_fotos=`echo "$lista_fotos" | grep "s320x320" | wc -l`
   qnt_fotos=$[qnt_fotos+1]
 
-  # Quantidade de fotos, por padrXo vai ser a qnt de .jpg com qualidade s320x320
+  # Quantidade de fotos, por padrão vai ser a qnt de .jpg com qualidade s320x320
   : ${STKG_IN:="$qnt_fotos"}
 
-  # Se nXo existir o diretXrio "instagram" no alvo
+  # Se não existir o diretório "instagram" no alvo
   if [ ! -d "$CAMINHO_STKG_DB/$2/instagram" ] ; then
     mkdir "$CAMINHO_STKG_DB/$2/instagram"
   fi
@@ -283,19 +283,19 @@ function stalking_instagram() {
 # Ainda em desenvolvimento
 function stalking_twitter() {
 
-  # Quantidade de tweets para baixar, padrXo é 20
+  # Quantidade de tweets para baixar, padrão é 20
   : ${STKG_TW:="20"}
 
   printf "\n :: Baixando os tweets [${cor_amarela}${STKG_TW}${cor_normal}]"
   conteudo_site=`curl -s "$1"`
-  stalking_verificar_erro "$?" "NXo foi possivel baixar os tweets"
+  stalking_verificar_erro "$?" "Não foi possivel baixar os tweets"
  
-  # Gambiarra bXsica para pegar somente os ultimos $STKG_TW twetts
+  # Gambiarra básica para pegar somente os ultimos $STKG_TW twetts
   tweets=`echo "$conteudo_site" | grep "tweet-text" | sed -e "s/\n//g" | \
     sed -e "/<span /d" | sed -e "/<div /d" | \
     sed -n '/^$/!{s/<[^>]*//g;p;}' | head -20`
 
-  # DiretXrio para colocar os tweets
+  # Diretório para colocar os tweets
   if [ ! -d "$CAMINHO_STKG_DB/$2/twitter" ] ; then
     mkdir "$CAMINHO_STKG_DB/$2/twitter"
   fi
@@ -332,7 +332,7 @@ function stalking_search() {
     # Resultado da pesquisa
     output_pesquisa=`$STKG_SEARCH "$alvo ${site[$var]}" | sed -e "s/?hl=\w*//g"`
     if [ $? -ne 0 ] ; then
-      print_error "Não foi possXvel efetuar a pesquisa"
+      print_error "Não foi possivel efetuar a pesquisa"
     fi
 
     # Gambiarra para ter somente o nome do usuário
