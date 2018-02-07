@@ -170,6 +170,7 @@ function stalking_view() {
   dir_alvo=`stalking_get_dir "Diretório" "$1"`
 
   stalking_verificar_dir "$dir_alvo"
+  stalking_verificar_dir "$dir_alvo/instagram"
 
   $STKG_VIEWER "$CAMINHO_STKG_DB/$dir_alvo/instagram/FT-01.png"
 
@@ -239,10 +240,18 @@ function stalking_instagram() {
   qnt_fotos=`echo "$lista_fotos" | grep "s320x320" | wc -l`
   qnt_fotos=$[qnt_fotos+1]
 
+  # Quantidade de fotos, por padrXo vai ser a qnt de .jpg com qualidade s320x320
+  : ${STKG_IN:="$qnt_fotos"}
+
+  # Se nXo existir o diretXrio "instagram" no alvo
+  if [ ! -d "$CAMINHO_STKG_DB/$2/instagram" ] ; then
+    mkdir "$CAMINHO_STKG_DB/$2/instagram"
+  fi
+
   printf " :: Baixando fotos [${cor_amarela}${qnt_fotos}${cor_normal}]"
 
   # Para cada foto
-  for (( i=1 ; i<=$qnt_fotos ; ++i )) ; do
+  for (( i=1 ; i<=$STKG_IN ; ++i )) ; do
 
     if [ $i -eq 1 ] ; then
       link_baixar=`echo "$lista_fotos" | head -1`
@@ -253,11 +262,11 @@ function stalking_instagram() {
 
     # Hora de baixar os materiais de pesquisa
     # Brincadeiras a parte, vai baixar a foto
-    wget -q "$link_baixar" -O "$CAMINHO_STKG_DB/$2/FT-$i.jpg"
+    wget -q "$link_baixar" -O "$CAMINHO_STKG_DB/$2/instagram/FT-$i.jpg"
     num_erro=$?
 
     # Se for a ultima foto
-    if [ $i -eq $qnt_fotos ] ; then
+    if [ $i -eq $STKG_IN ] ; then
       stalking_verificar_erro "$?" "Não foi possivel baixar a ultima foto"
 
     else
@@ -273,7 +282,26 @@ function stalking_instagram() {
 
 # Ainda em desenvolvimento
 function stalking_twitter() {
-  printf "\n :: Ainda em desenvolvimento\n"
+
+  # Quantidade de tweets para baixar, padrXo é 20
+  : ${STKG_TW:="20"}
+
+  printf "\n :: Baixando os tweets [${cor_amarela}${STKG_TW}${cor_normal}]"
+  conteudo_site=`curl -s "$1"`
+  stalking_verificar_erro "$?" "NXo foi possivel baixar os tweets"
+ 
+  # Gambiarra bXsica para pegar somente os ultimos $STKG_TW twetts
+  tweets=`echo "$conteudo_site" | grep "tweet-text" | sed -e "s/\n//g" | \
+    sed -e "/<span /d" | sed -e "/<div /d" | \
+    sed -n '/^$/!{s/<[^>]*//g;p;}' | head -20`
+
+  # DiretXrio para colocar os tweets
+  if [ ! -d "$CAMINHO_STKG_DB/$2/twitter" ] ; then
+    mkdir "$CAMINHO_STKG_DB/$2/twitter"
+  fi
+
+  echo "$tweets" > "$CAMINHO_STKG_DB/$2/twitter/tweets.txt"
+
 }
 
 # Função para pesquisar por alguém
