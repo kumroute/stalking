@@ -16,6 +16,7 @@ bash stalking.sh
   * CAMINHO_STKG_DB: é o caminho aonde ficarão os diretórios  
   * STKG_DEL: é o comando que será usado para remover o(s) diretório(s)  
   * STKG_VIEWER: é o comando que será usado para visualizar as fotos/imagens  
+  * STKG_SEARCH: é o comando que será executado para pesquisar
   * STKG_ENCRYPT/STKG_DECRYPT: é o comando que será usado para criptografar/descriptografar o(s) diretório(s)  
   * STKG_CRYPT_ALG: é usado somente no printf, é o algoritmo que o programa utiliza para criptografar/descriptografar o(s) diretório(s)  
 

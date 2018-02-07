@@ -281,8 +281,11 @@ function stalking_twitter() {
 # Twitter: vai baixar os tweets
 function stalking_search() {
 
-  # github.com/jarun/googler
-  stalking_verificar_dep "googler"
+  # Se não existir, o stalking usará o googler (github.com/jarun/googler)
+  #  como padrão
+  : ${STKG_SEARCH:="googler -C --np -n 2"}
+
+  stalking_verificar_dep "$STKG_SEARCH"
 
   alvo=`stalking_get_dir "Nome do alvo" "$1"`
 
@@ -298,18 +301,20 @@ function stalking_search() {
   # Para cada site
   var=0 ; while [ "${site[$var]}" ] ; do
 
-    # Resultado da pesquisa no Google
-    output_googler=`googler -C --np -n 2 "$alvo ${site[$var]}" | \
-      sed -e "s/?hl=\w*//g"`
+    # Resultado da pesquisa
+    output_pesquisa=`$STKG_SEARCH "$alvo ${site[$var]}" | sed -e "s/?hl=\w*//g"`
+    if [ $? -ne 0 ] ; then
+      print_error "Não foi possXvel efetuar a pesquisa"
+    fi
 
     # Gambiarra para ter somente o nome do usuário
     # Estou aceitando pull requests ou sugestões de como fazer isso de uma forma
     #  mais "bonita"
-    username=`echo "$output_googler" | sed -e 's/ /\n/g' | grep "@" | \
+    username=`echo "$output_pesquisa" | sed -e 's/ /\n/g' | grep "@" | \
       head -1 | sed -e 's/(//g' | sed -e 's/)//g' | sed -e 's/@//g'`
 
     # Considera o primeiro resultado como o correto
-    link=`echo "$output_googler" | head -2 | tail -1`
+    link=`echo "$output_pesquisa" | head -2 | tail -1`
 
     printf "[*] ${cor_amarela}${site[$var]}${cor_normal}: $username "
 
